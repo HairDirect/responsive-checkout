@@ -1,0 +1,907 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Hair Direct Checkout</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/modal.css" rel="stylesheet" />
+    <script src="js/modernizr-2.6.2.js"></script>
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery-migrate-1.2.1.js"></script>
+    <script src="js/animatescroll.js"></script>
+    <script src="js/jquery.maskedinput.js"></script>
+    <script src="js/handlebars-v1.3.0.js"></script>
+    <script src="js/jquery-ui-autocomplete.js"></script>
+    <script src="js/jquery.select-to-autocomplete.js"></script>
+</head>
+<body>
+    <div class="checkout">
+        <header class="grid">
+            <nav class="global-nav grid__item one-whole">
+                <div class="grid">
+                    <div class="grid__item one-third lap-one-sixth desk-one-sixth logo taptarget">
+                        <img src="images/logo.svg" />
+                    </div>
+                    <div class="grid__item two-thirds lap-five-sixths desk-five-sixths help">
+                        <div class="trust-asset">
+                            <svg version="1.1" id="trust-asset-lock" class="trust-asset-lock" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 99 120" enable-background="new 0 0 99 120" xml:space="preserve">
+                            <path class="lock" fill="#D8D8D8" d="M83,50V33C83,14.8,68.2,0,50,0S17,14.8,17,33v17H0v70h99V50H83z M40,102l6.3-22.5C43.8,78.4,42,75.9,42,73
+                                                                     c0-3.9,3.1-7,7-7s7,3.1,7,7c0,2.9-1.8,5.4-4.3,6.5L58,102H40z M29,50V33c0-11.6,9.4-21,21-21s21,9.4,21,21v17H29z" />
+                            </svg>
+                        </div>
+                        <p>
+                            <a class="need-help">Need Help?</a>
+                        </p>
+                    </div>
+                </div>
+            </nav>
+            <div id="progress-bar" class="grid__item one-whole progress">
+                <ul class="">
+                    <li class="shipping active"><a href="#checkout-shipping-address">Shipping Address</a></li>
+                    <li class="method"><a href="#checkout-shipping-method">Shipping Method</a></li>
+                    <li class="billing"><a href="#checkout-billing-information">Billing</a></li>
+                    <li class="review"><a href="#checkout-order-review">Review</a></li>
+                </ul>
+            </div>
+        </header>
+        <article class="grid">
+            <div id="error-container" class="error-container grid grid__item one-whole card error" style="display: none;">
+            </div>
+            <div id="shipping-address" class="grid__item one-whole">
+                <h2 class="instructions">
+                    Select a shipping address
+                </h2>
+                <div class="address-wrapper">
+                    <ul class="grid address-list"></ul>
+                    <div class="grid">
+                        <div class="buttons grid__item one-whole desk-one-half">
+                            <button class="changeaddress btn taptarget tertiary one-whole">Use different address</button>
+                            <button class="createaddress btn taptarget tertiary one-whole add" style="display: none;">Create new address</button>
+                        </div>
+                    </div>
+                </div>
+                <form id="new-address-form" action="#" class="new-address grid" style="display: none;">
+                    <ul class="grid__item grid add-edit-address form-fields one-whole card">
+                        <li class="field country grid__item one-whole">
+                            <h2 data-new-text="Create a new address" data-edit-text="Edit address">Create a new address</h2>
+                            <select class="required" id="country-input"></select>
+                            <label for="country-input" class="dropdownlabel">Country</label>
+                        </li>
+                        <li class="required-field-message grid__item one-whole">required fields</li>
+                        <li class="field field__secondary name grid__item one-whole" style="display: none;">
+                            <input type="text" class="text-input required" id="name-input" title="Name">
+                            <label for="name-input">Name</label>
+                        </li>
+                        <li class="field field__secondary company grid__item one-whole" style="display: none;">
+                            <input type="text" class="text-input" id="company-input">
+                            <label for="company-input">Company</label>
+                        </li>
+                        <li class="field field__secondary address grid__item one-whole" style="display: none;">
+                            <textarea class="text-input required" id="address-input"></textarea>
+                            <label for="address-input">Street Address</label>
+                        </li>
+                        <li class="field field__secondary city grid__item one-whole" style="display: none;">
+                            <input type="text" class="text-input  required" id="city-input">
+                            <label for="city-input">City</label>
+                        </li>
+                        <li class="field field__secondary state grid__item one-whole" style="display: none;">
+                            <input type="text" class="text-input" id="state-input">
+                            <label for="state-input">State/Province</label>
+                        </li>
+                        <li class="field state-select grid__item one-whole" style="display: none; overflow: inherit;">
+                            <select class="required" id="state-input-select"></select>
+                            <label for="state-input-select" class="dropdownlabel">State/Province</label>
+                        </li>
+                        <li class="field field__secondary postal-code grid__item one-whole" style="display: none;">
+                            <input type="text" class="text-input required" id="postal-code-input">
+                            <label for="postal-code-input">Postal Code</label>
+                        </li>
+                        <li class="field field__secondary phone grid__item one-whole" style="display: none;">
+                            <input type="tel" class="text-input required" id="phone-input">
+                            <label for="phone-input">Phone</label>
+                        </li>
+                        <li class="field__secondary buttons grid__item one-whole" style="display: none;">
+                            <button class="cancel btn btn--small taptarget tertiary">Cancel</button>
+                            <button class="save btn btn--small taptarget secondary" disabled="disabled">Save Address</button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div id="shipping-method" class="grid__item one-whole shipping-method" style="display:none;">
+                <h2 class="instructions">
+                    Select a shipping method
+                </h2>
+                <div class="loading-panel">
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <p>
+                        Loading Shipping Options...
+                    </p>
+                </div>
+                <div class="shipping-option-wrapper" style="display:none;">
+                    <p>
+                        Your order will be shipped from our warehouse in <span data-us-shipping-origin="Lancaster, PA" data-eu-shipping-origin="Amsterdam, NL">Lancaster, PA</span>.
+                    </p>
+                    <p data-localization-visibility="intl" class="card background-info">
+                        Prices shown do not include possible duties or import taxes your country may impose.<br><a href="#shipping-policy-modal">Learn more about our Shipping Policy.</a>
+                    </p>
+                    <ul class="grid shipping-option-list">
+                        <li class="grid__item one-whole shipping-option-item">
+                            <input type="radio" name="select-shipping-option" id="option0" value="option0" checked>
+                            <label for="option0" class="card">
+                                <div class="shipping-option">
+                                    <span class="carrier usps">USPS:</span>
+                                    <span class="method">First-Class Mail&reg; Parcel</span>
+                                    <span class="delivery-date">March 21st - March 25th</span>
+                                    <span class="price">$2.46</span>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="grid__item one-whole shipping-option-item">
+                            <input type="radio" name="select-shipping-option" id="option1" value="option1">
+                            <label for="option1" class="card">
+                                <div class="shipping-option">
+                                    <span class="carrier usps">USPS:</span>
+                                    <span class="method">Standard Post&reg;</span>
+                                    <span class="delivery-date">March 20th - March 28th</span>
+                                    <span class="price">$5.94</span>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="grid__item one-whole shipping-option-item">
+                            <input type="radio" name="select-shipping-option" id="option2" value="option2">
+                            <label for="option2" class="card">
+                                <div class="shipping-option">
+                                    <span class="carrier ups">UPS:</span>
+                                    <span class="method">Ground</span>
+                                    <span class="delivery-date">March 19th - March 25th</span>
+                                    <span class="price">$10.37</span>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="grid__item one-whole shipping-option-item">
+                            <input type="radio" name="select-shipping-option" id="option3" value="option3">
+                            <label for="option3" class="card">
+                                <div class="shipping-option">
+                                    <span class="carrier usps">USPS:</span>
+                                    <span class="method">Priority Mail Express 2-Day&trade;</span>
+                                    <span class="delivery-date">Wednesday March 19th</span>
+                                    <span class="price">$17.97</span>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="grid__item one-whole shipping-option-item">
+                            <input type="radio" name="select-shipping-option" id="option4" value="option4">
+                            <label for="option4" class="card">
+                                <div class="shipping-option">
+                                    <span class="carrier ups">UPS:</span>
+                                    <span class="method">2nd Day Air</span>
+                                    <span class="delivery-date">Thursday March 20th</span>
+                                    <span class="price">$19.85</span>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="grid__item one-whole shipping-option-item">
+                            <input type="radio" name="select-shipping-option" id="option5" value="option5">
+                            <label for="option5" class="card">
+                                <div class="shipping-option">
+                                    <span class="carrier ups">UPS:</span>
+                                    <span class="method">Next Day Air</span>
+                                    <span class="delivery-date">Wednesday March 19th</span>
+                                    <span class="price">$32.21</span>
+                                </div>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="billing-information" class="grid__item one-whole billing-information" style="display:none;">
+                <h2 class="instructions">
+                    Select payment method
+                </h2>
+                <div class="promo-code-container grid">
+                    <div class="grid__item one-whole desk-one-half">
+                        <form id="promo-code-form" action="#">
+                            <ul class="form-fields one-whole card">
+                                <li class="promo-error-message" style="display:none;"></li>
+                                <li class="field promo-code">
+                                    <input type="text" class="text-input" id="promo-code-input" title="Promo Code">
+                                    <label for="promo-code-input">Enter Promo Code</label>
+                                    <span class="promo-details" style="display:none;"></span>
+                                    <button class="apply btn taptarget secondary" data-text="Apply Code" data-text-alt="Remove Code">Apply Code</button>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+                <div class="payment-wrapper grid">
+                    <div class="grid__item one-whole grid payment-option-list btn_group">
+                        <input type="radio" name="select-payment-option" id="payment-option-credit-card" value="credit-card" checked>
+                        <label for="payment-option-credit-card" class="grid__item one-half payment-option-item btn btn_group_item">
+                            <div class="payment-option">
+                                Credit Card
+                            </div>
+                        </label>
+                        <input type="radio" name="select-payment-option" id="payment-option-paypal" value="paypal">
+                        <label for="payment-option-paypal" class="grid__item one-half payment-option-item btn btn_group_item">
+                            <div class="payment-option">
+                                PayPal
+                            </div>
+                        </label>
+                    </div>
+                    <div class="credit-card-wrapper grid__item one-whole">
+                        <ul class="grid credit-card-list">
+                            <li class="grid__item one-whole desk-one-half create-credit-card-wrapper">
+                                <button class="create-credit-card btn taptarget tertiary one-whole add">Add new credit card</button>
+                            </li>
+                        </ul>
+                        <form id="credit-card-form" action="#" style="display: none;" class="grid">
+                            <h2 data-new-text="Add new credit card" data-edit-text="Edit credit card" class="grid__item one-whole">Add new credit card</h2>
+                            <ul class="grid__item add-edit-credit-card form-fields one-whole card grid ">
+                                <li class="grid__item required-field-message">required fields</li>
+                                <li class="field grid__item one-whole card-number_read_only">
+                                    <span class="type" style="display:none;"></span>
+                                    <span class="cc-number-masked" style="display: none;"></span>
+                                </li>
+                                <li class="field grid__item one-whole name">
+                                    <input type="text" class="text-input required" id="cc-name-input" title="Name">
+                                    <label for="cc-name-input">Name</label>
+                                </li>
+                                <li class="field grid__item one-whole card-number">
+                                    <input type="text" class="text-input required" id="cc-number-input" title="Card Number" pattern="\d*">
+                                    <label for="cc-number-input">Card Number</label>
+                                </li>
+                                <li class="field grid__item one-half palm-one-whole card-expiration">
+                                    <input type="text" class="text-input required" id="cc-expiration-input" title="Expiration" pattern="\d*">
+                                    <label for="cc-expiration-input">Expires: MM/YY</label>
+                                </li>
+                                <li class="field grid__item one-half palm-one-whole card-security">
+                                    <input type="text" class="text-input required" id="cc-security-code-input" title="Security Code" pattern="\d*">
+                                    <label for="cc-security-code-input">Security Code</label>
+                                </li>
+                                <li class="field grid__item billing-address one-whole lap-one-half desk-one-half">
+                                </li>
+                                <li class="buttons grid__item one-whole lap-one-half desk-one-half">
+                                    <button class="change-billing-address small btn taptarget tertiary one-whole">Change Address</button>
+                                </li>
+                                <li class="field grid__item one-whole card-wallet">
+                                    <input type="checkbox" class="checkbox-input" id="cc-wallet-input" title="Save this card to use again">
+                                    <label for="cc-wallet-input">Remember this card</label>
+                                </li>
+                                <li class="save_button grid__item one-whole lap-one-half desk-one-half">
+                                    <button class="save btn btn--small taptarget secondary one-whole" data-new-text="Use this card" data-edit-text="Update card" disabled>Use this card</button>
+                                </li>
+                                <li class="cancel_button grid__item one-whole lap-one-half desk-one-half">
+                                    <button class="cancel btn btn--small taptarget tertiary one-whole">Cancel</button>
+                                </li>
+                            </ul>
+                        </form>
+                        <div class="billing-address-container" style="display:none;">
+                            <h3>Select a billing address</h3>
+                            <ul class="grid address-list">
+                                <li class="buttons grid__item one-whole desk-one-half">
+                                    <button class="create-billing-address btn taptarget tertiary one-whole add" style="display: none;">Create new address</button>
+                                </li>
+                            </ul>
+                            <form id="billing-address-form" action="#" class="grid" style="display: none;">
+                                <ul class="grid__item grid add-edit-address form-fields one-whole card">
+                                    <li class="field country grid__item one-whole">
+                                        <h3 class="title" data-new-text="Create a new address" data-edit-text="Edit address">Create a new address</h3>
+                                        <select class="required" id="billing-country-input"></select>
+                                        <label for="billing-country-input">Country</label>
+                                    </li>
+                                    <li class="required-field-message grid__item one-whole">required fields</li>
+                                    <li class="field field__secondary name grid__item one-whole" style="display: none;">
+                                        <input type="text" class="text-input required" id="name-input" title="Name">
+                                        <label for="name-input" class="dropdownlabel">Name</label>
+                                    </li>
+                                    <li class="field field__secondary company grid__item one-whole" style="display: none;">
+                                        <input type="text" class="text-input" id="company-input">
+                                        <label for="company-input">Company</label>
+                                    </li>
+                                    <li class="field field__secondary address grid__item one-whole" style="display: none;">
+                                        <textarea class="text-input required" id="address-input"></textarea>
+                                        <label for="address-input">Street Address</label>
+                                    </li>
+                                    <li class="field field__secondary city grid__item one-whole" style="display: none;">
+                                        <input type="text" class="text-input required" id="city-input">
+                                        <label for="city-input">City</label>
+                                    </li>
+                                    <li class="field field__secondary state grid__item one-whole" style="display: none;">
+                                        <input type="text" class="text-input" id="state-input">
+                                        <label for="state-input">State/Province</label>
+                                    </li>
+                                    <li class="field state-select grid__item one-whole" style="display: none; overflow: inherit;">
+                                        <select class="required" id="state-input-select"></select>
+                                        <label for="state-input-select" class="dropdownlabel">State/Province</label>
+                                    </li>
+                                    <li class="field field__secondary postal-code grid__item one-whole" style="display: none;">
+                                        <input type="text" class="text-input required" id="postal-code-input">
+                                        <label for="postal-code-input">Postal Code</label>
+                                    </li>
+                                    <li class="field field__secondary phone grid__item one-whole" style="display: none;">
+                                        <input type="tel" class="text-input required" id="phone-input">
+                                        <label for="phone-input">Phone</label>
+                                    </li>
+                                    <li class="field__secondary buttons grid__item one-whole" style="display: none;">
+                                        <button class="cancel btn btn--small taptarget tertiary">Cancel</button>
+                                        <button class="save btn btn--small taptarget secondary" disabled="disabled">Save Address</button>
+                                    </li>
+                                </ul>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="paypal-container grid__item grid" style="display:none;">
+                        <p class="grid__item one-whole info">When you click Next, you’ll be taken to Paypal’s site. Follow Paypal’s instructions, then you’ll be sent right back here to review and confirm your order.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="order-review" class="order-review grid__item one-whole" style="display:none;">
+                <h2>Review your order</h2>
+                <div class="shopping-cart-container">
+                    <ul class="cart-items block-list">
+                        <li class="cart-item header">
+                            <ul class="grid">
+                                <li class="grid__item one-third thumbnail">
+
+                                </li>
+                                <li class="grid__item four-fifths details">
+                                    <ul class="form-fields">
+                                        <li class="field name">
+                                            <span class="label">Name:</span>
+                                        </li>
+                                        <li class="field price">
+                                            <span class="label">Price:</span>
+                                        </li>
+                                        <li class="field quantity">
+                                            <span class="label">Quantity:</span>
+                                        </li>
+                                        <li class="field total">
+                                            <span class="label">Total:</span>
+                                        </li>
+                                        <li class="field buttons">
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="cart-item one-whole">
+                            <input type="hidden" value="1" class="product-id" />
+                            <ul class="grid">
+                                <li class="grid__item one-third thumbnail">
+                                    <img src="images/product_1_thumb.png" alt="" />
+                                </li>
+                                <li class="grid__item one-whole lap-four-fifths desk-four-fifths details">
+                                    <ul class="form-fields">
+                                        <li class="field name">
+                                            <span class="label">Name:</span>
+                                            <span class="value">ProTouch No Sweat 4oz</span>
+                                        </li>
+                                        <li class="field price">
+                                            <span class="label">Price:</span>
+                                            <span class="value">$9.95</span>
+                                        </li>
+                                        <li class="field quantity">
+                                            <span class="label">Quantity:</span>
+                                            <span class="value">
+                                                <input type="number" name="product_1_quantity" value="1" min="0" max="999" class="nolabel" data-orig-val="1" pattern="\d*"><button class="btn small update-cart-item tertiary">Update</button>
+                                            </span>
+                                        </li>
+                                        <li class="field total">
+                                            <span class="label">Total:</span>
+                                            <span class="value">$9.95</span>
+                                        </li>
+                                        <li class="field buttons">
+                                            <button class="btn small remove-cart-item tertiary remove">Remove</button>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="cart-item">
+                            <input type="hidden" value="2" class="product-id" />
+                            <ul class="grid">
+                                <li class="grid__item one-third thumbnail">
+                                    <img src="images/product_2_thumb.png" alt="" />
+                                </li>
+                                <li class="grid__item one-whole lap-four-fifths desk-four-fifths details">
+                                    <ul class="form-fields">
+                                        <li class="field name">
+                                            <span class="label">Name:</span>
+                                            <span class="value">C22 Citrus Solvent 12oz</span>
+                                        </li>
+                                        <li class="field price">
+                                            <span class="label">Price:</span>
+                                            <span class="value">$14.90</span>
+                                        </li>
+                                        <li class="field quantity">
+                                            <span class="label">Quantity:</span>
+                                            <span class="value">
+                                                <input type="number" name="product_2_quantity" value="2" min="0" max="999" class="nolabel" data-orig-val="2" pattern="\d*"><button class="btn small update-cart-item tertiary">Update</button>
+                                            </span>
+                                        </li>
+                                        <li class="field total">
+                                            <span class="label">Total:</span>
+                                            <span class="value">$29.80</span>
+                                        </li>
+                                        <li class="field buttons">
+                                            <button class="btn small remove-cart-item tertiary remove">Remove</button>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="cart-item">
+                            <input type="hidden" value="3" class="product-id" />
+                            <ul class="grid">
+                                <li class="grid__item one-third thumbnail">
+                                    <img src="images/product_3_thumb.png" alt="" />
+                                </li>
+                                <li class="grid__item one-whole lap-four-fifths desk-four-fifths details">
+                                    <ul class="form-fields">
+                                        <li class="field name">
+                                            <span class="label">Name:</span>
+                                            <span class="value">Walker Adhesive Remover 4oz</span>
+                                        </li>
+                                        <li class="field price">
+                                            <span class="label">Price:</span>
+                                            <span class="value">$4.95</span>
+                                        </li>
+                                        <li class="field quantity">
+                                            <span class="label">Quantity:</span>
+                                            <span class="value">
+                                                <input type="number" name="product_3_quantity" value="5" min="0" max="999" class="nolabel" data-orig-val="5" pattern="\d*"><button class="btn small update-cart-item tertiary">Update</button>
+                                            </span>
+                                        </li>
+                                        <li class="field total">
+                                            <span class="label">Total:</span>
+                                            <span class="value">$24.75</span>
+                                        </li>
+                                        <li class="field buttons">
+                                            <button class="btn small remove-cart-item tertiary remove">Remove</button>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="total-container one-whole">
+                    <ul class="cost-breakdown form-fields">
+                        <li class="subtotal field">
+                            <ul class="grid">
+                                <li class="label grid__item">
+                                    <p>
+                                        Subtotal:<br /><span>(excl. tax)</span>
+                                    </p>
+                                </li>
+                                <li class="value grid__item">$64.50</li>
+                            </ul>
+                        </li>
+                        <li class="shipping field">
+                            <ul class="grid">
+                                <li class="label grid__item"><p>Shipping:<br /><span>(excl. tax)</span></p></li>
+                                <li class="value grid__item">$12.50</li>
+                            </ul>
+                        </li>
+                        <li class="tax field">
+                            <ul class="grid">
+                                <li class="label grid__item"><p>Tax:</p></li>
+                                <li class="value grid__item">$4.62</li>
+                            </ul>
+                        </li>
+                        <li class="discount field">
+                            <ul class="grid">
+                                <li class="label grid__item"><p>Discount:</p></li>
+                                <li class="value grid__item">$5.00</li>
+                            </ul>
+                        </li>
+                        <li class="total field">
+                            <ul class="grid">
+                                <li class="label grid__item"><p>Total:</p></li>
+                                <li class="value grid__item">$76.62</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="selection-container">
+                    <h3>Review checkout selections</h3>
+                    <ul class="grid">
+                        <li class="shipping-address grid__item one-whole desk-one-half">
+                            <div class="card">
+                                <button class="btn change tertiary small" data-related-step="#checkout-shipping-address">Change</button>
+                                <h4>Shipping Address</h4>
+                                <div class="address">
+                                    <span class="name">Ethan Koser</span>
+                                    <span class="company"></span>
+                                    <span class="street">123 A street</span>,
+                                    <span class="city">Mobile</span>
+                                    <span class="state">AK</span>
+                                    <span class="zip">88739</span>
+                                    <span class="country">United States</span>
+                                    <span class="phone">+1-222-333-4567</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="shipping-option grid__item one-whole desk-one-half">
+                            <div class="card">
+                                <button class="btn change tertiary small" data-related-step="#checkout-shipping-method">Change</button>
+                                <h4>Shipping Option</h4>
+                                <div class="shipping-option">
+                                    <span class="carrier usps">USPS:</span>
+                                    <span class="method">First-Class Mail&reg; Parcel</span>
+                                    <span class="delivery-date">March 21st - March 25th</span>
+                                    <span class="price">$2.46</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="billing-information grid__item one-whole desk-one-half">
+                            <div class="card">
+                                <button class="btn change tertiary small" data-related-step="#checkout-billing-information">Change</button>
+                                <h4>Payment Details</h4>
+                                <div class="billing-data">
+                                    <div class="address">
+                                        <span class="label">Billing Address:</span>
+                                        <span class="name">Ethan Koser</span>
+                                        <span class="company"></span>
+                                        <span class="street">123 A street</span>,
+                                        <span class="city">Mobile</span>
+                                        <span class="state">AK</span>
+                                        <span class="zip">88739</span>
+                                        <span class="country">United States</span>
+                                        <span class="phone">+1-222-333-4567</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="special-instructions-container">
+                    <div class="grid">
+                        <div class="grid__item one-whole">
+                            <form action="#" class="one-whole card">
+                                <h4>Special Instructions</h4>
+                                <textarea class="text-input" id="special-instructions-input" title="Special Instructions"></textarea>
+                                <label for="special-instructions-input">Enter questions or special requests</label>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="order-confirmation" class="order-confirmation grid__item one-whole" style="display:none;">
+                <h2>Order successfully submitted.</h2>
+                <div class="confirmation-message">
+                    <p>You will receive an order confirmation email shortly via email.</p>
+                    <p>Your order number: <span class="order-number">WEB00012345</span></p>
+                    <button class="btn grid__item primary">Continue to HD</button>
+                </div>
+            </div>
+        </article>
+        <footer class="grid">
+            <div class="cta_bar one-whole">
+                <div class="grid">
+                    <div class="total grid__item one-whole lap-three-quarters desk-three-quarters"></div>
+                    <button class="grid__item one-whole lap-one-quarter desk-one-quarter btn btn--positive primary one-whole" data-text-next="Next" data-text-complete="Submit Order">Next</button>
+                </div>
+            </div>
+            <div id="help-content" class="help grid__item one-whole greybox">
+                <h2>Need Help?</h2>
+                <p>For assistance, please call or email us.</p>
+                <div class="grid">
+                    <div class="grid__item one-whole lap-one-half desk-one-half">
+                        <a href="tel:+15555555555">Call us: +1 555-555-5555</a>
+                    </div>
+                    <div class="grid__item one-whole lap-one-half desk-one-half">
+                        <a href="mailto:talk@hairdirect.com" class="grid__item one-whole lap-one-half desk-one-half">Email: talk@hairdirect.com</a>
+                    </div>
+                </div>
+            </div>
+            <div class="privacy-policy grid__item one-whole lap-one-half desk-one-half greybox taptarget">
+                <a href="#privacy-policy-modal">Privacy Policy</a>
+            </div>
+            <div class="shipping-policy grid__item one-whole lap-one-half desk-one-half greybox taptarget">
+                <a href="#shipping-policy-modal">Shipping Policy</a>
+            </div>
+            <div class="cancel-order grid__item one-whole greybox">
+                <a class="btn btn--hard btn--small btn--negative btn--full" href="#cancel-order-modal">Cancel Order</a>
+            </div>
+            <!-- MODALS -->
+            <section class="semantic-content" id="privacy-policy-modal" tabindex="-1"
+                     role="dialog" aria-labelledby="privacy-policy-modal-label" aria-hidden="true">
+                <div class="modal-inner">
+                    <header id="privacy-policy-modal-label">Privacy Policy</header>
+                    <div class="modal-content">
+                        <h1>Privacy is important to us</h1>
+                        <h3>Because we know it's important to you</h3>
+                        <p>We try and keep our policies simple and straight forward. So this page covers two primary, yet basic issues. One talks about <strong>how we will handle your personal information</strong>.</p> <p>The other lets you know that we will <span class="tbold">always use absolute discretion</span> — to ensure your privacy — in our <span class="tbold">packaging and phone communications</span> with you.</p> <h2>How we obtain, use and store your personal information</h2> <p>
+                            Our website (<a href="/"></a><a href="/default.aspx">www.hairdirect.com</a>)
+                            may ask you for a variety of personal details at various places. Or
+                            maybe as a prerequisite to performing a specific action such as our <strong>sweepstakes, contact forms, e-brochures, newsletters or online store</strong>.
+                        </p> <p>
+                            We
+                            will only keep this information permanently with your explicit
+                            permission — or if you make a hair system or product purchase in
+                            our store.
+                        </p> <p>
+                            Under no circumstances will we
+                            ever sell, lease, loan or rent your information to any other company
+                            for any reason whatsoever. You're our customer... and we won't share!
+                        </p> <h2>How we communicate and send packages to you</h2> <p>
+                            We will <strong>never make a cold sales call to you</strong>
+                            for any reason. All personal phone and email communications will be at
+                            your request, or meant only to conduct specific business that relates
+                            to your order or account with us.
+                        </p> <p>When we call you, <span class="tbold">our representative will only identify our company as "HD Inc" or "HD"</span> — unless they are speaking directly with you. Also, all of our <span class="tbold">postal mail and shipped packages are discreet</span> and will identify our company as "HD Inc" or "HD".</p> <p>
+                            <strong>Our Email Newsletter</strong>
+                            — We have an informative newsletter that is emailed every month
+                            to our subscribers. It's called Buzz Mail and we have a strict <strong>SPAM-FREE policy</strong> that ensures this newsletter will only be sent to you at your request.
+                        </p> <p>
+                            It's
+                            important to note that due to the nature of this e-newsletter, and the
+                            inherent privacy of email as a whole, we do identify ourselves as "Hair
+                            Direct" and openly discuss topics related to hair loss and hair
+                            replacement.
+                        </p> <p>That about sums it up. If you have any questions about any of our company or privacy policies. Please don't hesitate to <a href="/contact.aspx">contact us</a> or call toll-free @ 1-800-424-7436.</p>
+                    </div>
+                </div>
+                <a href="#" class="modal-close" title="Close this modal" data-close="Close"
+                   data-dismiss="modal">×</a>
+            </section>
+            <section class="semantic-content" id="shipping-policy-modal" tabindex="-1"
+                     role="dialog" aria-labelledby="shipping-policy-modal-label" aria-hidden="true">
+                <div class="modal-inner">
+                    <header id="shipping-policy-modal-label">Shipping Policy</header>
+                    <div class="modal-content">
+                        <h1>Shipping Costs &amp; Policies</h1>
+                        <p><strong>We ship hair and accessory products differently.</strong> That’s because they are very different products. For example, <a href="/hair/default.aspx" title="Custom Hair Systems">custom hair systems</a> take several weeks to create, and they come to our US office before they’re sent to you.&nbsp;Accessories (shampoos, tapes, etc) are different. They can be purchased from different stores and are shipped soon after you order them.&nbsp;</p>
+                        <h2>Discreet Packaging for Your Privacy</h2>
+                        <p>We take your privacy seriously! The contents and source of your order will not appear on the delivered package. Every hair and accessories order is shipped in a plain box, labeled “HD Inc.” on the shipping tag.</p>
+                        <h2>Courier Options</h2>
+                        <p>We have a variety of shipping methods available, depending on the urgency of your order. US and global shipping methods include:</p>
+                        <ul class="custombulletList">
+                            <li>U.S. Postal Service</li>
+                            <li>UPS</li>
+                        </ul>
+                        <p><em>More shipping options are available upon request</em></p>
+                        <p><strong>PLEASE NOTE:</strong> To help save you money, we might occasionally change the shipping method you select during checkout if we know an alternative type of shipping would get your package to you just as quickly, but for less money.&nbsp;</p>
+                        <h2>How We Ship Hair</h2>
+                        <p>After your <a href="/hair/systems/default.aspx" title="Hair Replacement System">hair replacement system</a> arrives from the factory, we'll ship it right out to you, provided there is no outstanding unpaid balance on your account. Our hair system shipping rates are based on a flat scale for most locations: $12.95 for delivery within the continental US; $36.00 outside the continental US.</p>
+                        <p>All custom hair orders are shipped globally from our US &amp; Worldwide Store. A signature will be required for delivery, unless you request that no signature be required.</p>
+                        <p>In the US &amp; Worldwide store, men’s stock hair orders must be placed by 12pm EDT to qualify for same day shipping. If ordered together, men’s Stocks and accessory products will ship together.</p>
+                        <h3>Production Times for Custom-Made Hair Systems</h3>
+                        <p>Top of head (partial) hair systems usually require 8 weeks to create and full cap systems will take about 12-14 weeks. Typical design and manufacturing times will vary, because each system is hand-made, and some are more complicated to produce than others.&nbsp;</p>
+                        <h3>Super Rush Orders</h3>
+                        <p>We can place a Super Rush on custom hair system orders for an additional cost. <strong>A partial hair system with a Super Rush will be delivered 35 days from the order date; full cap systems take only 45 days.</strong> Super Rushes are guaranteed: if we miss the delivery date, we’ll refund the additional cost. <a href="/contact.aspx" title="Contact Us">Contact us</a> for details, limited availability.</p>
+                        <h2>How We Ship Accessories</h2>
+                        <p>All of our shipping costs for accessory products are calculated at the time of your order, according to the weight of your shipment, type of delivery you choose and your location. Payment is taken when the order is shipped.</p>
+                        <p>All product orders received prior to 2pm EDT are normally shipped the same business day.</p>
+                        <p>Accessory products shipping details vary depending on which store you are shopping in. Learn more.</p>
+                        <h3>Free Shipping Offer</h3>
+                        <p>We offer free shipping on online accessory orders over $50 within the continental US. However, in some cases certain items may require an additional shipping charge. If we anticipate any unexpected shipping charges we will contact you so you can decide if you would still like to place the order.</p>
+                        <p>Our US &amp; Worldwide Store automatically selects a free shipping method, but you’ll typically still be able to choose between USPS and UPS Ground. This free shipping offer is not valid on hair system orders.</p>
+                        <h3>Products with Shipping Limitations</h3>
+                        <p>Due to flammability and/or hazardous material regulations beyond our control, there are limitations to where and how some products are shipped.</p>
+                        <h3>Specific Products with Shipping Limitations</h3>
+                        <ul>
+                            <li>AdSol 32oz </li>
+                            <li>Brandywine Wigspray 10oz</li>
+                            <li>Brandywine Wigluster 10oz</li>
+                            <li>C22 12oz</li>
+                            <li>C22 Gallon</li>
+                            <li>Concise Spray Design</li>
+                            <li>Chromatone Spray</li>
+                            <li>CT Finishing Spray</li>
+                            <li>Isopropyl Alcohol</li>
+                            <li>Jerome Russel Hair Thickener</li>
+                            <li>Jon Renau 3 Way Styling Spray</li>
+                            <li>Jorgen Amber Solvent Quart</li>
+                            <li>Keepers Product Pro-Bond II 4oz</li>
+                            <li>Liquitape 3.4oz</li>
+                            <li>Matrix 32oz</li>
+                            <li>Mity Tite 3.4oz</li>
+                            <li>New Man Fiberguard</li>
+                            <li>New Man Scalp Freshener</li>
+                            <li>Perma Rite #1 4oz</li>
+                            <li>Perma Rite Plus #1 4oz</li>
+                            <li>Rapid Release 12oz</li>
+                            <li>Remove 12 oz</li>
+                            <li>TDi Aerotec 10oz</li>
+                            <li>TDi Knot Sealer 4oz</li>
+                            <li>Ultra Hold 3.4oz</li>
+                            <li>Vapon Wig Cleaner 32oz</li>
+                            <li>Walker Adhesive Remover Gallon</li>
+                            <li>Walker Top Loc Knot Sealer 4oz&nbsp;</li>
+                            <li>Walker Ultra Hold 16oz</li>
+                        </ul>
+                        <h3>Countries we CAN NOT Ship to from the US &amp; Worldwide Store</h3>
+                        <p>We welcome international clients and can ship to many points throughout the world. However, there are some countries we aren't able to ship to.</p>
+                        <ul>
+                            <li>Afghanistan</li>
+                            <li>Angola</li>
+                            <li>Antarctica</li>
+                            <li>Ascension Island</li>
+                            <li>Benin</li>
+                            <li>Burkina Faso</li>
+                            <li>British Indies/Chagos</li>
+                            <li>Cape Verde</li>
+                            <li>Caroline Islands</li>
+                            <li>Christmas Islands</li>
+                            <li>Cocos Islands</li>
+                            <li>Comoros</li>
+                            <li>Cuba (UPS embargo)</li>
+                            <li>Cyprus</li>
+                            <li>Falkland Islands</li>
+                            <li>French So. Territory</li>
+                            <li>Gambia</li>
+                            <li>Ghana</li>
+                            <li>Guantanamo Military Base</li>
+                            <li>Guinea-Bissau</li>
+                            <li>Heard Island</li>
+                            <li>Iran (UPS embargo)</li>
+                            <li>Ivory Coast</li>
+                            <li>Kosovo</li>
+                            <li>Liberia</li>
+                            <li>Libya (UPS embargo)</li>
+                            <li>Mali</li>
+                            <li>Mauritania</li>
+                            <li>Mayotte Islands</li>
+                            <li>McDonald Island</li>
+                            <li>Midway Islands</li>
+                            <li>Niger</li>
+                            <li>Nigeria</li>
+                            <li>Nauru Island</li>
+                            <li>Niue</li>
+                            <li>North Korea (UPS embargo)</li>
+                            <li>Pitcairn</li>
+                            <li>Russia</li>
+                            <li>Senegal</li>
+                            <li>Sao Tome Principe</li>
+                            <li>Sierra Leone</li>
+                            <li>Somalia</li>
+                            <li>St. Pierre</li>
+                            <li>Sudan (UPS embargo)</li>
+                            <li>Tokelau</li>
+                            <li>Togo</li>
+                            <li>Wake Island</li>
+                            <li>Western Sahara</li>
+                        </ul>
+                        <h2>Questions About Our Shipping Rates &amp; Policies</h2>
+                        <p>If you have any questions about our shipping rates or policies, please don't hesitate to <a href="/contact.aspx">contact us</a>.</p>
+
+                    </div>
+                </div>
+                <a href="#" class="modal-close" title="Close this modal" data-close="Close"
+                   data-dismiss="modal">×</a>
+            </section>
+            <section class="semantic-content" id="cancel-order-modal" tabindex="-1"
+                     role="dialog" aria-labelledby="cancel-order-modal-label" aria-hidden="true">
+                <div class="modal-inner">
+                    <header id="cancel-order-modal-label">Cancel Order</header>
+                    <div class="modal-content">
+                        <p>
+                            Are you sure you want to cancel your order?
+                        </p>
+                        <ul class="grid__item grid form-fields one-whole">
+                            <li class="field grid__item one-half"><a href="#" data-close="Close" data-dismiss="modal" class="taptarget btn small secondary">Yes</a></li>
+                            <li class="field grid__item one-half"><a href="#" data-close="Close" data-dismiss="modal" class="cancel taptarget btn small tertiary">No</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <a href="#" class="modal-close" title="Close this modal" data-close="Close" data-dismiss="modal">×</a>
+            </section>
+        </footer>
+    </div>
+    <!-- SCRIPTS -->
+    <script src="js/modal.js"></script>
+    <script src="js/jquery.ba-bbq.js"></script>
+    <script src="js/handlebars-v1.3.0.js"></script>
+    <script id="error-message-template" type="text/x-handlebars-template">
+        <div class="grid__item one-whole">
+            <p class="message">{{message}}</p>
+            {{#if detail_message}}
+            <p class="details">
+                {{detail_message}}
+                <ul>
+                    {{#each this.field_names}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </p>
+            {{/if}}
+        </div>
+    </script>
+    <script id="country-select-template" type="text/x-handlebars-template">
+        <select class="required" id="{{id}}">
+            <option value=""></option>
+            {{#each this.countries}}
+            <option value="{{value}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </script>
+    <script id="state-select-template" type="text/x-handlebars-template">
+        <select class="required" id="{{id}}">
+            <option value=""></option>
+            {{#each this.states}}
+            <option value="{{value}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </script>
+    <script id="customer-addresses-template" type="text/x-handlebars-template">
+        {{#each this}}
+        <li class="grid__item one-whole desk-one-half address-item">
+            <input type="radio" name="select-address" id="address{{id}}" value="address{{id}}">
+            <label for="address{{id}}" class="card">
+                <span class="btn secondary small"></span>
+                <button class="btn edit tertiary small">Edit</button>
+                <div class="address">
+                    <span class="name">{{name}}</span>
+                    <span class="company">{{company}}</span>
+                    <span class="street">{{street}}</span>,
+                    <span class="city">{{city}}</span>
+                    <span class="state">{{state}}</span>
+                    <span class="zip">{{postal}}</span>
+                    <span class="country">{{country_name}}</span>
+                    <span class="phone">{{phone}}</span>
+                </div>
+            </label>
+        </li>
+        {{/each}}
+    </script>
+    <script id="customer-credit-card-template" type="text/x-handlebars-template">
+        {{#each this}}
+        <li class="{{default}} grid__item one-whole desk-one-half credit-card-item">
+            <input type="radio" name="select-credit-card" id="card{{id}}" value="card{{id}}" {{default_checked}} {{disabled}}>
+            <label for="card{{id}}" class="card {{expired_class}} {{incomplete_class}}">
+                <span class="btn paywiththis secondary small"></span>
+                <button class="btn edit-credit-card tertiary small">Edit</button>
+                <div class="credit-card">
+                    <span class="type {{ToLower type}}">{{type}}</span>
+                    <span class="masked-number">ending in: {{last_four}}</span>
+                    <span class="expiration">Expires: {{expiration}}</span>
+                </div>
+                <div class="address">
+                    <span class="label">Billing Address:</span>
+                    <span class="street">{{street}}</span>,
+                    <span class="city">{{city}}</span>
+                    <span class="state">{{state}}</span>
+                    <span class="zip">{{postal}}</span>
+                </div>
+            </label>
+        </li>
+        {{/each}}
+    </script>
+    <script src="js/checkout.js"></script>
+    <script type="text/javascript">
+        var mode = getUrlVars()["mode"];
+        Checkout.Settings.Shared.mode = (mode.substring(0, 1) == "n" ? "new" : "return"); // new|return
+        Checkout.Functions.Shared.Init();
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+    </script>
+    <script type="text/javascript">
+        var _mfq = _mfq || [];
+        (function () {
+            var mf = document.createElement("script"); mf.type = "text/javascript"; mf.async = true;
+            mf.src = "//cdn.mouseflow.com/projects/cfe72756-3932-4185-8f83-f5d87cdc1ba8.js";
+            document.getElementsByTagName("head")[0].appendChild(mf);
+        })();
+    </script>
+</body>
+</html>
