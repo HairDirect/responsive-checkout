@@ -446,7 +446,7 @@ article {
 
         @media #{$lap}{
             clear: none;
-            margin-left: 1.5em;
+            // margin-left: 1.5em;
         }
 
         @media #{$desk}{
@@ -875,6 +875,7 @@ input[type=radio]:checked + label.card {
   h3 {
     padding-left: 0;
   }
+
 }
 
 .billtothis {
@@ -1152,7 +1153,8 @@ input[type=radio]:checked + label.card {
     }
 
     .thumbnail {
-      width: 30%;
+      width: 100%;
+      margin-bottom: 1em;
 
       @media #{$lap} {
         width: 30%;
@@ -1218,12 +1220,28 @@ input[type=radio]:checked + label.card {
 
           button {
             width: 100%;
-            margin-top: -11em;
+            margin-top: -213px;
 
             @media #{$desk} {
               margin-top: 0 !important;
             }
           }
+        }
+
+        &.total {
+          @include border('top');
+          padding-top: 1em;
+
+          & .label, & .value {
+
+            @include font-size(1.2, 500);
+
+            @media #{$lap} {
+              font-weight: 300 !important;
+            }
+
+          }
+
         }
 
         @media #{$desk} {
@@ -1247,6 +1265,12 @@ input[type=radio]:checked + label.card {
           display: block;
           float: left;
           margin-right: 1em;
+
+          &.total {
+            border-top: none;
+            font-weight: 500;
+            padding-top: 0;
+          }
         }
       }
     }
@@ -1314,6 +1338,9 @@ input[type=radio]:checked + label.card {
 
   h4 {
     margin-bottom: 1rem;
+    text-align: left;
+    padding-left: 0;
+    margin-top: 0;
   }
 
   button {

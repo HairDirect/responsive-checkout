@@ -96,15 +96,24 @@
   @extend .background-error;
   @include transition($transition);
   padding-left: 0.25em;
+
+  @media #{$palm} {
+    padding: 0;
+    text-align: center;
+  }
+
   @media #{$lap} {
     padding-left: .75em;
   }
 
-  &:before {
-    @include pseudo(1.2em, 2em, "\2715");
-    text-align: left;
-    font-size: 1em;
-    font-weight: 300;
+
+  @media #{$lap} {
+    &:before {
+      @include pseudo(1.2em, 2em, "\2715");
+      text-align: left;
+      font-size: 1em;
+      font-weight: 300;
+    }
   }
 
   &:hover {
